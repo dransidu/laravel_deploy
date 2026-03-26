@@ -99,17 +99,37 @@ composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
 
 echo ""
 echo "=== [6/6] Artisan commands — key, cache, migrate, seed, wayfinder ==="
+
+# Generate app key first so all subsequent commands can bootstrap correctly
 if ! grep -qE '^APP_KEY=base64:' "${APP_ROOT}/.env"; then
   php artisan key:generate --force
 fi
 
+# Clear stale caches before anything else
 php artisan config:clear || true
 php artisan route:clear  || true
 php artisan view:clear   || true
 php artisan cache:clear  || true
 
+# Build fresh production caches so service providers resolve correctly
+# (missing config cache is a common cause of "Call to a member function on null")
+php artisan config:cache || true
+php artisan route:cache  || true
+php artisan view:cache   || true
+
+# Migrations are strict — a failed migration means a broken app
 php artisan migrate --force
-php artisan db:seed --force
+
+# Seeder failures (e.g. "Call to a member function name() on null") are app-level
+# bugs that must not block Nginx/PHP-FPM coming up. We warn and continue.
+if ! php artisan db:seed --force; then
+  echo ""
+  echo "  !! WARNING: db:seed failed — your seeder has an application error."
+  echo "  !! Common cause: calling ->relationship->property on a null model."
+  echo "  !! Fix the seeder in database/seeders/ then re-run:"
+  echo "  !!   cd ${APP_ROOT} && php artisan db:seed --force"
+  echo ""
+fi
 
 php artisan wayfinder:generate || true
 
