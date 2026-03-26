@@ -2,14 +2,16 @@
 # =============================================================
 # 07_frontend.sh — Swap memory setup + npm frontend build +
 #                  final permission/service restart
-# Requires: INSTALL_NODE, SWAP_SIZE_MB, APP_ROOT,
+# Requires: ADD_SWAP, SWAP_SIZE_MB, INSTALL_NODE, APP_ROOT,
 #           NODE_BUILD_HEAP_MB, PHP_VER, APP_NAME
 # =============================================================
 
+# ---------------------------------------------------------------
+# Swap memory (independent of Node/frontend)
+# ---------------------------------------------------------------
 echo ""
-if [[ "${INSTALL_NODE}" =~ ^[Yy]$ ]]; then
-
-  echo "=== [1/3] Add swap (${SWAP_SIZE_MB} MB) for low-memory servers ==="
+if [[ "${ADD_SWAP}" =~ ^[Yy]$ ]]; then
+  echo "=== [1/3] Add swap (${SWAP_SIZE_MB} MB) ==="
   if ! swapon --show | awk '{print $1}' | grep -qx "/swapfile"; then
     echo "No swap found — creating ${SWAP_SIZE_MB} MB swapfile..."
     fallocate -l "${SWAP_SIZE_MB}M" /swapfile 2>/dev/null \
@@ -19,13 +21,20 @@ if [[ "${INSTALL_NODE}" =~ ^[Yy]$ ]]; then
     swapon /swapfile
     grep -q '^/swapfile ' /etc/fstab \
       || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    echo "Swap created and enabled."
   else
     echo "Swap already enabled."
   fi
-
   free -h || true
+else
+  echo "=== [1/3] Swap: skipped ==="
+fi
 
-  echo ""
+# ---------------------------------------------------------------
+# Frontend build
+# ---------------------------------------------------------------
+echo ""
+if [[ "${INSTALL_NODE}" =~ ^[Yy]$ ]]; then
   echo "=== [2/3] Build frontend ==="
   cd "${APP_ROOT}"
 
@@ -36,9 +45,8 @@ if [[ "${INSTALL_NODE}" =~ ^[Yy]$ ]]; then
   fi
 
   NODE_OPTIONS="--max-old-space-size=${NODE_BUILD_HEAP_MB}" npm run build
-
 else
-  echo "=== Skipping swap + frontend build (Node.js not requested) ==="
+  echo "=== [2/3] Frontend build: skipped (Node.js not requested) ==="
 fi
 
 echo ""

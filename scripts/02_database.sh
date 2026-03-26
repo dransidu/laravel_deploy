@@ -11,14 +11,10 @@ apt-get install -y postgresql postgresql-contrib
 systemctl enable --now postgresql
 
 echo ""
-echo "=== [2/3] Configure PostgreSQL user ==="
-if [[ "${UPDATE_POSTGRES_PASS}" =~ ^[Yy]$ ]]; then
-  sudo -u postgres psql -v ON_ERROR_STOP=1 \
-    -c "ALTER ROLE postgres WITH PASSWORD '${DB_PASS}';"
-  echo "Updated postgres password."
-else
-  echo "Skipped postgres password update."
-fi
+echo "=== [2/3] Configure PostgreSQL user password ==="
+sudo -u postgres psql -v ON_ERROR_STOP=1 \
+  -c "ALTER ROLE postgres WITH PASSWORD '${DB_PASS}';"
+echo "Postgres password set."
 
 echo ""
 echo "=== [3/3] Create database '${DB_NAME}' ==="
