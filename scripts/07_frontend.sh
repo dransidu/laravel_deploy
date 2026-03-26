@@ -10,7 +10,7 @@
 # Swap memory (independent of Node/frontend)
 # ---------------------------------------------------------------
 echo ""
-if [[ "${ADD_SWAP}" =~ ^[Yy]$ ]]; then
+if [[ "${ADD_SWAP:-N}" =~ ^[Yy]$ ]]; then
   echo "=== [1/3] Add swap (${SWAP_SIZE_MB} MB) ==="
   if ! swapon --show | awk '{print $1}' | grep -qx "/swapfile"; then
     echo "No swap found — creating ${SWAP_SIZE_MB} MB swapfile..."
@@ -34,7 +34,7 @@ fi
 # Frontend build
 # ---------------------------------------------------------------
 echo ""
-if [[ "${INSTALL_NODE}" =~ ^[Yy]$ ]]; then
+if [[ "${INSTALL_NODE:-N}" =~ ^[Yy]$ ]]; then
   echo "=== [2/3] Build frontend ==="
   cd "${APP_ROOT}"
 

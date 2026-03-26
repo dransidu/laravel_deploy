@@ -70,7 +70,7 @@ save_config() {
                 DB_NAME DB_USER DB_PASS \
                 PHP_VER NODE_MAJOR \
                 APP_ENV APP_DEBUG \
-                NODE_BUILD_HEAP_MB SWAP_SIZE_MB \
+                NODE_BUILD_HEAP_MB ADD_SWAP SWAP_SIZE_MB \
                 DB_RESET INSTALL_NODE UPDATE_POSTGRES_PASS \
                 SSL_DIR_CERT SSL_DIR_KEY ORIGIN_CERT_PATH ORIGIN_KEY_PATH \
                 PHP_SOCK; do
