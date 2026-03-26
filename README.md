@@ -20,17 +20,17 @@ An interactive, modular bash script that sets up a **production-ready Laravel ap
 
 ## What Gets Installed
 
-| Software | Version / Notes |
-|---|---|
-| **Nginx** | Latest stable, from Ubuntu repo |
-| **PHP-FPM** | Configurable (default: 8.5), via `ppa:ondrej/php` |
-| **PHP Extensions** | `pgsql`, `mbstring`, `xml`, `curl`, `zip`, `bcmath`, `intl`, `gd` |
-| **Composer** | Latest stable (installed globally) |
-| **PostgreSQL** | Latest stable, from Ubuntu repo |
-| **Supervisor** | Queue worker process manager |
-| **Node.js** *(optional)* | Configurable major version (default: 22), via NodeSource |
-| **npm** *(optional)* | Bundled with Node.js |
-| **UFW** | Firewall — allows SSH, HTTP (80), HTTPS (443) |
+| Software                 | Version / Notes                                                   |
+| ------------------------ | ----------------------------------------------------------------- |
+| **Nginx**                | Latest stable, from Ubuntu repo                                   |
+| **PHP-FPM**              | Configurable (default: 8.5), via `ppa:ondrej/php`                 |
+| **PHP Extensions**       | `pgsql`, `mbstring`, `xml`, `curl`, `zip`, `bcmath`, `intl`, `gd` |
+| **Composer**             | Latest stable (installed globally)                                |
+| **PostgreSQL**           | Latest stable, from Ubuntu repo                                   |
+| **Supervisor**           | Queue worker process manager                                      |
+| **Node.js** _(optional)_ | Configurable major version (default: 22), via NodeSource          |
+| **npm** _(optional)_     | Bundled with Node.js                                              |
+| **UFW**                  | Firewall — allows SSH, HTTP (80), HTTPS (443)                     |
 
 ---
 
@@ -86,22 +86,22 @@ sudo bash deploy.sh
 
 The script will ask you for the following:
 
-| Prompt | Description |
-|---|---|
-| **App name** | Identifier used for file paths, DB name, log names (required) |
-| **Domain** | Your domain, e.g. `app.example.com` (required) |
-| **Git repo URL** | SSH or HTTPS URL of your Laravel project |
-| **Branch** | Git branch to deploy (default: `main`) |
-| **Database name** | PostgreSQL database name (default: app name) |
-| **Database user** | PostgreSQL user (default: `postgres`) |
-| **Database password** | Leave blank to auto-generate a secure password |
-| **PHP version** | PHP version to install (default: `8.5`) |
-| **Node.js major version** | Only used if you enable Node.js (default: `22`) |
-| **App environment** | `production` / `staging` etc. (default: `production`) |
-| **App debug** | `true` or `false` (default: `false`) |
-| **Node heap memory MB** | Max RAM for npm build (default: `1536`) |
-| **Add swap memory?** | Recommended if server RAM is 1 GB or less |
-| **Full DB reset?** | ⚠️ Drops and recreates the database — **deletes all data** |
+| Prompt                                | Description                                                   |
+| ------------------------------------- | ------------------------------------------------------------- |
+| **App name**                          | Identifier used for file paths, DB name, log names (required) |
+| **Domain**                            | Your domain, e.g. `app.example.com` (required)                |
+| **Git repo URL**                      | SSH or HTTPS URL of your Laravel project                      |
+| **Branch**                            | Git branch to deploy (default: `main`)                        |
+| **Database name**                     | PostgreSQL database name (default: app name)                  |
+| **Database user**                     | PostgreSQL user (default: `postgres`)                         |
+| **Database password**                 | Leave blank to auto-generate a secure password                |
+| **PHP version**                       | PHP version to install (default: `8.5`)                       |
+| **Node.js major version**             | Only used if you enable Node.js (default: `22`)               |
+| **App environment**                   | `production` / `staging` etc. (default: `production`)         |
+| **App debug**                         | `true` or `false` (default: `false`)                          |
+| **Node heap memory MB**               | Max RAM for npm build (default: `1536`)                       |
+| **Add swap memory?**                  | Recommended if server RAM is 1 GB or less                     |
+| **Full DB reset?**                    | ⚠️ Drops and recreates the database — **deletes all data**    |
 | **Install Node.js + frontend build?** | Only needed if your app has a frontend build step (Vite, Mix) |
 
 After answering, a summary is shown and you must confirm before anything runs.
@@ -117,11 +117,13 @@ https://<YOUR_PAT>@github.com/your-username/your-repo.git
 ```
 
 To generate a PAT:
+
 1. Go to **GitHub → Settings → Developer settings → Personal access tokens**
 2. Create a token with `repo` (read) scope
 3. Paste the URL above when prompted for the repo URL
 
 > **Security note:** The PAT is embedded in the Git remote URL stored on the server. After deploy you can remove it from the remote with:
+>
 > ```bash
 > git -C /var/www/<appname> remote set-url origin git@github.com:your-username/your-repo.git
 > ```
@@ -167,15 +169,15 @@ State is stored in `/var/tmp/laravel_deploy_state/` and is automatically deleted
 
 ## What Happens After Deployment
 
-| Item | Location |
-|---|---|
-| App files | `/var/www/<appname>/` |
-| Nginx site config | `/etc/nginx/sites-available/<appname>` |
-| SSL certificate | `/etc/ssl/certs/<appname>.crt` |
-| SSL private key | `/etc/ssl/private/<appname>.key` |
-| Queue worker log | `/var/log/<appname>-queue.log` |
-| Supervisor config | `/etc/supervisor/conf.d/<appname>-queue.conf` |
-| Laravel scheduler cron | `/etc/cron.d/<appname>-scheduler` |
+| Item                   | Location                                      |
+| ---------------------- | --------------------------------------------- |
+| App files              | `/var/www/<appname>/`                         |
+| Nginx site config      | `/etc/nginx/sites-available/<appname>`        |
+| SSL certificate        | `/etc/ssl/certs/<appname>.crt`                |
+| SSL private key        | `/etc/ssl/private/<appname>.key`              |
+| Queue worker log       | `/var/log/<appname>-queue.log`                |
+| Supervisor config      | `/etc/supervisor/conf.d/<appname>-queue.conf` |
+| Laravel scheduler cron | `/etc/cron.d/<appname>-scheduler`             |
 
 ### Useful commands after deploy
 
