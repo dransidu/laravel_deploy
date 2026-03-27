@@ -14,15 +14,19 @@ apt-get install -y --no-install-recommends \
   git unzip zip acl ufw build-essential openssl
 
 echo ""
-echo "=== [2/7] Firewall — allow OpenSSH, HTTP, HTTPS ==="
-ufw allow OpenSSH   || true
-ufw allow 'Nginx Full' || true
-ufw --force enable  || true
-
-echo ""
 echo "=== [3/7] Install Nginx ==="
 apt-get install -y nginx
 systemctl enable --now nginx
+
+echo ""
+echo "=== [2/7] Firewall — allow OpenSSH, HTTP, HTTPS ==="
+ufw allow OpenSSH    || true
+ufw allow 80/tcp     || true
+ufw allow 443/tcp    || true
+# Also allow the Nginx Full profile now that Nginx is installed and the
+# profile is registered — this is belt-and-suspenders for future ufw reloads.
+ufw allow 'Nginx Full' || true
+ufw --force enable   || true
 
 echo ""
 echo "=== [4/7] Install PHP ${PHP_VER} + extensions ==="
